@@ -1,0 +1,138 @@
+var robot = require('robotjs');
+
+function sleep(ms) {
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+function main(){
+    // #first step from bank good
+    robot.moveMouse(1599,148);
+    robot.mouseClick();
+    console.log("first step completed")
+    sleep(8000)
+    //#second step
+    robot.moveMouse(1566,179);
+    sleep(100)
+    robot.mouseClick();
+    console.log("2 step completed")
+    sleep(10500)
+    // third step
+    robot.keyToggle("right","down");
+    sleep(1000)
+    robot.keyToggle("right","up");
+    robot.moveMouse(1266,652);
+    robot.mouseClick();
+    console.log("3 step completed")
+    sleep(5000)
+    robot.mouseClick();
+     // fourth step recenter compass
+    robot.moveMouse(1575,161);
+    robot.mouseClick();
+    sleep(5000)
+    
+     // fifth  step rune enter
+    robot.moveMouse(1325,538);
+    robot.mouseClick();
+    console.log("5 step completed")
+    sleep(1000)
+     // 6 step rune craft
+    robot.moveMouse(1526,112);
+    robot.mouseClick();
+    console.log("6 step completed")
+    sleep(500)
+     // 7 step 
+   sleep(1000)
+   robot.keyToggle("right","down");
+    sleep(900)
+    robot.keyToggle("right","up");
+    sleep(1000)
+            robot.moveMouse(1377,132); // craft
+            robot.mouseClick();
+            sleep(6000)
+            robot.moveMouse(1458,751); //pouches
+            robot.mouseClick();
+            sleep(500)
+            robot.moveMouse(1491,754);
+            robot.mouseClick();
+            sleep(500)
+            robot.moveMouse(1539,753);
+            robot.mouseClick();
+            sleep(500)
+            robot.moveMouse(1254,481);
+            robot.mouseClick();
+            sleep(500)
+            robot.moveMouse(1583,750);
+            robot.mouseClick();
+            sleep(500)
+            robot.mouseClick();
+            sleep(500)
+            robot.moveMouse(1257,463);
+            robot.mouseClick();
+            console.log("7 step completed")
+            robot.moveMouse(1555,150);
+            robot.mouseClick();
+            sleep(6000)
+     // 8 step
+    robot.moveMouse(1265,555);
+    robot.mouseClick();
+    console.log("8 step completed")
+    sleep(300)
+     // 9 step
+    robot.moveMouse(1486,48);
+    robot.mouseClick();
+    console.log("compass")
+    sleep(200)
+     // 10 step
+    robot.moveMouse(1171,120);
+    robot.mouseClick();
+    console.log("10 step completed")
+    sleep(9000)
+     // third step
+    robot.keyToggle("down","down");
+        sleep(1000)
+        robot.keyToggle("down","up")
+        robot.moveMouse(1088,296);
+    robot.mouseClick();
+    sleep(20000)
+     // close poll
+    robot.moveMouse(1578,133);
+    robot.mouseClick();
+    sleep(1000)
+     // open bank
+    robot.moveMouse(940,406);
+    robot.mouseClick();
+    sleep(2000)
+     // depo runes step
+    robot.moveMouse(1462,799);
+    robot.mouseClick();
+    sleep(1000)
+     // third step
+     robot.moveMouse(1458,751);
+     robot.mouseClick();
+     sleep(200)
+     robot.moveMouse(1491,754);
+     robot.mouseClick();
+     sleep(200)
+     robot.moveMouse(1539,753);
+     robot.mouseClick();
+     sleep(200)
+     robot.moveMouse(1254,481);
+    sleep(1000)
+     // third step
+    robot.moveMouse(959,139);
+    robot.mouseClick();
+    sleep(1000)
+    robot.moveMouse(1575,750); // last pouch
+    robot.mouseClick();
+    sleep(100)
+    robot.mouseClick();
+     // third step
+     robot.moveMouse(1357,65);
+     robot.mouseClick();
+
+
+    
+}
+
+
+main();

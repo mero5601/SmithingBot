@@ -1,0 +1,127 @@
+const robot = require("robotjs");
+
+function createBmpHeader(width, height) {
+    const header = Buffer.alloc(54); // BMP header is always 54 bytes
+
+    // BMP Header
+    header.write("BM", 0); // Signature
+    header.writeUInt32LE(54 + width * height * 4, 2); // File size
+    header.writeUInt32LE(0, 6); // Reserved
+    header.writeUInt32LE(54, 10); // Data offset
+
+    // DIB Header
+    header.writeUInt32LE(40, 14); // DIB header size
+    header.writeInt32LE(width, 18); // Image width
+    header.writeInt32LE(-height, 22); // Image height (negative for top-down bitmap)
+    header.writeUInt16LE(1, 26); // Planes
+    header.writeUInt16LE(32, 28); // Bits per pixel
+    header.writeUInt32LE(0, 30); // Compression (none)
+    header.writeUInt32LE(width * height * 4, 34); // Image size
+    header.writeInt32LE(2835, 38); // Horizontal resolution (pixels per meter)
+    header.writeInt32LE(2835, 42); // Vertical resolution (pixels per meter)
+    header.writeUInt32LE(0, 46); // Colors in palette
+    header.writeUInt32LE(0, 50); // Important colors
+
+    return header;
+}
+
+function sleep(ms) {
+    ms = Number(ms)
+    if (isNaN(ms)) {
+        console.error("Sleep value is not a number!");
+        return;
+    }
+    const maxOffset = 1337;
+    const additionalSleep = Math.floor(Math.random() * (maxOffset + 1));
+    const totalSleep = ms + additionalSleep;
+
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, totalSleep);
+}
+
+const furnace = { x: 1267, y: 366, name: "Furnace" };
+
+async function captureTooltipToClipboard() {
+    try {
+        const mousePos = robot.getMousePos();
+        const tooltipX = mousePos.x + 5;
+        const tooltipY = mousePos.y + 5;
+        const tooltipWidth = 80;
+        const tooltipHeight = 15;
+
+        const screenshot = robot.screen.capture(tooltipX, tooltipY, tooltipWidth, tooltipHeight);
+
+        if (!screenshot || screenshot.width === 0 || screenshot.height === 0) {
+            console.log("No tooltip detected or invalid screenshot.");
+            return;
+        }
+
+        const image = new Jimp({
+            width: screenshot.width,
+            height: screenshot.height,
+            data: screenshot.image,
+        });
+
+        image.greyscale();
+
+        const buffer = await image.getBufferAsync(Jimp.MIME_PNG);
+
+        await clipboardy.write(buffer); // Now correct
+
+        console.log("Tooltip image copied to clipboard!");
+    } catch (error) {
+        console.error("Error capturing or copying tooltip:", error);
+    }
+}
+
+async function testCapture() {
+    robot.moveMouse(furnace.x, furnace.y);
+    await sleep(500);
+    await captureTooltipToClipboard();
+}
+
+function saveToClipboard(img, width, height) {
+    const buffer = Buffer.alloc(width * height * 4); // Create a buffer for image data
+
+    for (let x = 0; x < width; x++) {
+        for (let y = 0; y < height; y++) {
+            const color = img.colorAt(x, y);
+            const r = parseInt(color.substring(0, 2), 16);
+            const g = parseInt(color.substring(2, 4), 16);
+            const b = parseInt(color.substring(4, 6), 16);
+            const index = (y * width + x) * 4;
+
+            buffer[index] = b; // BMP format uses BGR instead of RGB
+            buffer[index + 1] = g;
+            buffer[index + 2] = r;
+            buffer[index + 3] = 255; // Alpha channel
+        }
+    }
+
+function main() {
+    findAgi();
+    
+}
+
+main();
+
+
+function findAgi() {
+    // Get current cursor position
+    const mousePos = robot.getMousePos();
+
+    // Define the tooltip area relative to the current cursor position
+    const x = mousePos.x;
+    const y = mousePos.y + 5; // 5 pixels below the cursor
+    const width = 80;
+    const height = 15;
+
+    // Capture the specified area
+    const img = robot.screen.capture(x, y, width, height);
+
+    // Save the screenshot to clipboard
+    saveToClipboard(img, width, height);
+
+    console.log(`Captured tooltip at (${x}, ${y}) with dimensions ${width}x${height}.`);
+}
+
+}
